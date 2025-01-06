@@ -4,7 +4,15 @@ import {
   formatFileSize,
   calculateAverageLuminance,
 } from "../../analysis/base";
-import { BiRectangle, BiExpandAlt, BiMemoryCard, BiBulb } from "react-icons/bi";
+import {
+  BiRectangle,
+  BiExpandAlt,
+  BiMemoryCard,
+  BiBulb,
+  BiFile,
+  BiTime,
+  BiColorFill,
+} from "react-icons/bi";
 
 interface ImageStatisticsProps {
   image: File | null;
@@ -17,6 +25,11 @@ interface ImageDetails {
   fileType: string;
   fileFormat: string;
   luminance: string;
+  lastModified: string;
+  colorDepth?: number;
+  dpi?: number;
+  bitsPerChannel?: number;
+  channels?: number;
 }
 
 const ImageStatistics: React.FC<ImageStatisticsProps> = ({ image }) => {
@@ -48,6 +61,10 @@ const ImageStatistics: React.FC<ImageStatisticsProps> = ({ image }) => {
           img.width,
           img.height
         ).toFixed(2),
+        lastModified: new Date(image.lastModified).toLocaleDateString(),
+        colorDepth: 24,
+        bitsPerChannel: 8,
+        channels: 3,
       });
       URL.revokeObjectURL(img.src);
     };
@@ -75,6 +92,25 @@ const ImageStatistics: React.FC<ImageStatisticsProps> = ({ image }) => {
       icon: <BiBulb className="text-xl" />,
       label: "Luminance",
       value: details.luminance,
+    },
+    {
+      icon: <BiFile className="text-xl" />,
+      label: "Format",
+      value: details.fileFormat.toUpperCase(),
+    },
+    {
+      icon: <BiTime className="text-xl" />,
+      label: "Modified",
+      value: new Date(image.lastModified).toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }),
+    },
+    {
+      icon: <BiColorFill className="text-xl" />,
+      label: "Color Depth",
+      value: details.colorDepth ? `${details.colorDepth}-bits` : "N/A",
     },
   ];
 
