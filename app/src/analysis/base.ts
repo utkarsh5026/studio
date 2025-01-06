@@ -1,3 +1,5 @@
+import type { ImageDimensions } from "./types";
+
 /**
  * Calculates the simplified aspect ratio for given dimensions
  * @param width - The width of the image in pixels
@@ -10,10 +12,7 @@
 export function calculateAspectRatio(
   width: number,
   height: number
-): {
-  width: number;
-  height: number;
-} {
+): ImageDimensions {
   const gcd = (a: number, b: number): number => {
     return b ? gcd(b, a % b) : a;
   };
@@ -60,11 +59,16 @@ export function calculateAverageLuminance(
   const imageData = ctx.getImageData(0, 0, width, height);
   const data = imageData.data;
   let sum = 0;
+
+  // Process each pixel (RGBA values)
   for (let i = 0; i < data.length; i += 4) {
     const r = data[i];
     const g = data[i + 1];
     const b = data[i + 2];
-    sum += (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    // Calculate relative luminance without dividing by 255 here
+    sum += 0.299 * r + 0.587 * g + 0.114 * b;
   }
-  return sum / (width * height);
+
+  // Divide by total number of pixels and normalize to 0-1 range
+  return sum / (width * height) / 255;
 }
