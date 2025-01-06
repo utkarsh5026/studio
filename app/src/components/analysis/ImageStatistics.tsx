@@ -4,7 +4,7 @@ import {
   formatFileSize,
   calculateAverageLuminance,
 } from "../../analysis/base";
-import { BiRectangle, BiExpandAlt, BiMemoryCard } from "react-icons/bi";
+import { BiRectangle, BiExpandAlt, BiMemoryCard, BiBulb } from "react-icons/bi";
 
 interface ImageStatisticsProps {
   image: File | null;
@@ -72,7 +72,7 @@ const ImageStatistics: React.FC<ImageStatisticsProps> = ({ image }) => {
       value: details.fileSize,
     },
     {
-      icon: <BiMemoryCard className="text-xl" />,
+      icon: <BiBulb className="text-xl" />,
       label: "Luminance",
       value: details.luminance,
     },
