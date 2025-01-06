@@ -59,8 +59,10 @@
 @layer base {
   * {
     @apply border-border;
+    font-family: 'Fira Code', monospace;
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Fira Code', monospace;
   }
 }
