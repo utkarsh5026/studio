@@ -1,8 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import imageSlice from "../image/slice";
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    image: imageSlice,
+  },
 });
 
 export type RootState = ReturnType<typeof store.getState>;
