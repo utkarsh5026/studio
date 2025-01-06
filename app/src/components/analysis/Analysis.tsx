@@ -7,9 +7,12 @@ import {
   TabsList,
   TabsTrigger,
 } from "../../components/ui/tabs";
+import { ColorAnalysis } from "./ColorAnalysis";
+
 const Analysis: React.FC = () => {
   const { image } = useImage();
   if (!image) return null;
+
   return (
     <Tabs defaultValue="statistics" className="w-full">
       <TabsList>
@@ -20,8 +23,7 @@ const Analysis: React.FC = () => {
         <ImageStatistics image={image.image} />
       </TabsContent>
       <TabsContent value="histogram">
-        {/* Add histogram component here when ready */}
-        <div>Histogram coming soon...</div>
+        <ColorAnalysis imageData={image.image} />
       </TabsContent>
     </Tabs>
   );
