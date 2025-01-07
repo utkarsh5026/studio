@@ -7,6 +7,7 @@ import {
   addDimensions as addDimensionsAction,
 } from "./slice";
 import type { ImageInfo, dimensions } from "./types";
+import { useCanvas, type CanvasResult } from "../../canvas/useCanvas";
 
 export const useImage = () => {
   const dispatch = useAppDispatch();
@@ -48,6 +49,29 @@ export const useImage = () => {
     [dispatch]
   );
 
+  const handleCanvasSuccess = useCallback(
+    (result: CanvasResult) => {
+      if (result.imageData) {
+        addDimensions({
+          width: result.imageData.width,
+          height: result.imageData.height,
+        });
+      }
+    },
+    [addDimensions]
+  );
+
+  const handleCanvasError = useCallback((error: string) => {
+    // You might want to handle canvas errors differently
+    console.error(error);
+  }, []);
+
+  const canvasResult = useCanvas({
+    file: image?.image || null,
+    onSuccess: handleCanvasSuccess,
+    onError: handleCanvasError,
+  });
+
   return {
     image,
     setImage,
@@ -56,5 +80,6 @@ export const useImage = () => {
     addDimensions,
     loading,
     error,
+    canvasResult,
   };
 };
