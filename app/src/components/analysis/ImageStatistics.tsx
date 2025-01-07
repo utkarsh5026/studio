@@ -14,6 +14,7 @@ import {
   BiColorFill,
 } from "react-icons/bi";
 import Stats from "./Stats";
+import DataCard from "./utils/DataCard";
 import type { CanvasResult } from "../../canvas/useCanvas";
 import type { ImageInfo } from "../../store/image/types";
 
@@ -124,10 +125,7 @@ const ImageStatistics: React.FC<ImageStatisticsProps> = ({
   ];
 
   return (
-    <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
-        Image Statistics
-      </h3>
+    <DataCard title="Image Statistics">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
           <Stats
@@ -138,7 +136,7 @@ const ImageStatistics: React.FC<ImageStatisticsProps> = ({
           />
         ))}
       </div>
-    </div>
+    </DataCard>
   );
 };
 
