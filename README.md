@@ -2,11 +2,11 @@
 
 A sophisticated web application for analyzing and optimizing images with detailed performance metrics, quality analysis, and compression recommendations.
 
-## ScreenShots
+## Screenshots
 
-[Luminance](./images/luminance.png)
-[Compression](./images/compression.png)
-[Quality](./images/quality.png)
+![Luminance](./images/luminance.png)
+![Compression](./images/compression.png)
+![Quality](./images/quality.png)
 
 ## 🚀 Features
 
