@@ -10,6 +10,7 @@ import BrowserCompatibility from "./BrowserCompatibility";
 import BandwidthRequirements from "./BandwidthRequirements";
 import RenderingImpact from "./RenderingImpact";
 import PerfCard from "./PerfCard";
+import Container from "../utils/Container";
 
 // Sample metrics for testing
 const sampleMetrics = {
@@ -112,7 +113,7 @@ const ImagePerformanceMetrics: React.FC<ImagePerformanceMetricsProps> = ({
   }
 
   return (
-    <div className="h-[calc(100vh-6rem)] overflow-y-auto space-y-8 p-6 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent">
+    <Container>
       <ResolutionRatio metrics={metrics.resolutionRatio} />
       <LoadingTime metrics={metrics.loadingTime} />
       <MemoryUsage metrics={metrics.memoryUsage} />
@@ -190,7 +191,7 @@ const ImagePerformanceMetrics: React.FC<ImagePerformanceMetricsProps> = ({
           </Alert>
         </div>
       </PerfCard>
-    </div>
+    </Container>
   );
 };
 
