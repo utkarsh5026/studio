@@ -113,10 +113,6 @@ const ImagePerformanceMetrics: React.FC<ImagePerformanceMetricsProps> = ({
 
   return (
     <div className="h-[calc(100vh-6rem)] overflow-y-auto space-y-8 p-6 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent">
-      <h2 className="text-2xl font-bold text-gray-800 sticky top-0 bg-white py-2 z-10">
-        Image Performance Analysis
-      </h2>
-
       <ResolutionRatio metrics={metrics.resolutionRatio} />
       <LoadingTime metrics={metrics.loadingTime} />
       <MemoryUsage metrics={metrics.memoryUsage} />

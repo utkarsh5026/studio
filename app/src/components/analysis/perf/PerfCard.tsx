@@ -19,18 +19,23 @@ const PerfCard: React.FC<PerfCardProps> = ({
 }) => {
   return (
     <Card
-      className="shadow-lg hover:shadow-xl transition-all duration-300 
+      className="relative overflow-hidden rounded-xl
+      shadow-md hover:shadow-xl transition-all duration-300 ease-in-out
       border border-gray-200/20 dark:border-gray-800/20 
-      bg-white dark:bg-gray-900 
-      dark:shadow-gray-900/30 dark:hover:shadow-gray-900/40"
+      bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm
+      dark:shadow-gray-900/30 dark:hover:shadow-gray-900/40
+      hover:transform hover:scale-[1.02]
+      group"
     >
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription className="dark:text-gray-400">
+      <CardHeader className="space-y-2">
+        <CardTitle className="text-xl font-semibold tracking-tight">
+          {title}
+        </CardTitle>
+        <CardDescription className="dark:text-gray-400/90 text-gray-600">
           {description}
         </CardDescription>
       </CardHeader>
-      <CardContent>{children}</CardContent>
+      <CardContent className="pt-2">{children}</CardContent>
     </Card>
   );
 };
