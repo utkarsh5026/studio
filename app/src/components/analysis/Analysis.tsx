@@ -7,24 +7,47 @@ import {
   TabsList,
   TabsTrigger,
 } from "../../components/ui/tabs";
+import EmptyAnalysis from "./EmptyAnalysis";
 import { ColorAnalysis } from "./ColorAnalysis";
+import LuminanceAnalysisView from "./luminiscence/LuminanceAnalysis";
 
+import Compression from "./compress/compression";
+import ImageStructure from "./ImageStructure";
+import ImagePerformance from "./perf/ImagePerformance";
 const Analysis: React.FC = () => {
-  const { image } = useImage();
-  if (!image) return null;
+  const { image, canvasResult } = useImage();
+  if (!image?.preview || !canvasResult) return <EmptyAnalysis />;
 
   return (
-    <Tabs defaultValue="statistics" className="w-full">
+    <Tabs defaultValue="statistics" className="w-full h-full flex flex-col">
       <TabsList>
         <TabsTrigger value="statistics">Statistics</TabsTrigger>
-        <TabsTrigger value="histogram">Histogram</TabsTrigger>
+        <TabsTrigger value="color">Color</TabsTrigger>
+        <TabsTrigger value="luminance">Luminance</TabsTrigger>
+        <TabsTrigger value="quality">Quality</TabsTrigger>
+        <TabsTrigger value="compression">Compression</TabsTrigger>
+        <TabsTrigger value="structure">Structure</TabsTrigger>
       </TabsList>
-      <TabsContent value="statistics">
-        <ImageStatistics image={image.image} />
-      </TabsContent>
-      <TabsContent value="histogram">
-        <ColorAnalysis imageData={image.image} />
-      </TabsContent>
+      <div className="flex-1 overflow-auto">
+        <TabsContent value="statistics" className="h-full">
+          <ImageStatistics imageInfo={image} canvasResult={canvasResult} />
+        </TabsContent>
+        <TabsContent value="color" className="h-full">
+          <ColorAnalysis imageData={image.image} />
+        </TabsContent>
+        <TabsContent value="luminance" className="h-full">
+          <LuminanceAnalysisView canvasResult={canvasResult} />
+        </TabsContent>
+        <TabsContent value="quality" className="h-full">
+          <ImagePerformance imageFile={image} />
+        </TabsContent>
+        <TabsContent value="compression" className="h-full">
+          <Compression imageFile={image.image} />
+        </TabsContent>
+        <TabsContent value="structure" className="h-full">
+          <ImageStructure file={image.image} />
+        </TabsContent>
+      </div>
     </Tabs>
   );
 };

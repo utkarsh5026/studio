@@ -8,7 +8,7 @@ import type {
   LuminanceAnalysis,
 } from "./types";
 
-export class LuminanceAnalyzer {
+class LuminanceAnalyzer {
   private readonly imageData: ImageData;
   private readonly luminanceValues: number[];
 
@@ -159,22 +159,53 @@ export class LuminanceAnalyzer {
    * Calculates the dynamic range of the image
    */
   public calculateDynamicRange(): DynamicRangeAnalysis {
-    const sortedValues = [...this.luminanceValues].sort((a, b) => a - b);
-    const percentile1 = sortedValues[Math.floor(sortedValues.length * 0.01)];
-    const percentile99 = sortedValues[Math.floor(sortedValues.length * 0.99)];
+    // Find min/max without sorting the entire array
+    let min = this.luminanceValues[0];
+    let max = this.luminanceValues[0];
 
-    const absoluteRange =
-      Math.max(...this.luminanceValues) - Math.min(...this.luminanceValues);
-    const effectiveRange = percentile99 - percentile1;
-
-    // Analyze presence in different zones
-    const zoneSize = 51; // Divide 0-255 into 5 zones
+    // Calculate min, max, and zone counts in a single pass
+    const zoneSize = 51;
     const zones = Array(5).fill(0);
 
-    this.luminanceValues.forEach((val) => {
+    for (const val of this.luminanceValues) {
+      min = Math.min(min, val);
+      max = Math.max(max, val);
       const zoneIndex = Math.min(4, Math.floor(val / zoneSize));
       zones[zoneIndex]++;
-    });
+    }
+
+    // Calculate percentiles without full sort
+    const histogram = new Array(256).fill(0);
+    this.luminanceValues.forEach((val) => histogram[Math.round(val)]++);
+
+    let count = 0;
+    let percentile1 = 0;
+    const target1 = this.luminanceValues.length * 0.01;
+
+    // Find 1st percentile
+    for (let i = 0; i < histogram.length; i++) {
+      count += histogram[i];
+      if (count >= target1) {
+        percentile1 = i;
+        break;
+      }
+    }
+
+    // Find 99th percentile
+    count = 0;
+    let percentile99 = 255;
+    const target99 = this.luminanceValues.length * 0.99;
+
+    for (let i = histogram.length - 1; i >= 0; i--) {
+      count += histogram[i];
+      if (count >= this.luminanceValues.length - target99) {
+        percentile99 = i;
+        break;
+      }
+    }
+
+    const absoluteRange = max - min;
+    const effectiveRange = percentile99 - percentile1;
 
     const zoneNames = [
       "Shadows",
@@ -311,3 +342,5 @@ export class LuminanceAnalyzer {
     };
   }
 }
+
+export default LuminanceAnalyzer;
