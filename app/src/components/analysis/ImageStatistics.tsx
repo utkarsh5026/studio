@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   calculateAspectRatio,
   formatFileSize,
@@ -14,10 +14,8 @@ import {
   BiColorFill,
 } from "react-icons/bi";
 import Stats from "./Stats";
-
-interface ImageStatisticsProps {
-  image: File | null;
-}
+import type { CanvasResult } from "../../canvas/useCanvas";
+import type { ImageInfo } from "../../store/image/types";
 
 interface ImageDetails {
   dimensions: { width: number; height: number };
@@ -33,45 +31,52 @@ interface ImageDetails {
   channels?: number;
 }
 
-const ImageStatistics: React.FC<ImageStatisticsProps> = ({ image }) => {
+interface ImageStatisticsProps {
+  imageInfo: ImageInfo;
+  canvasResult: CanvasResult;
+}
+
+const ImageStatistics: React.FC<ImageStatisticsProps> = ({
+  imageInfo,
+  canvasResult,
+}) => {
   const [details, setDetails] = useState<ImageDetails | null>(null);
 
-  useEffect(() => {
-    if (!image) return;
+  const handleCanvasResult = useCallback(
+    (canvasResult: CanvasResult, imageInfo: ImageInfo) => {
+      const { canvas, context, imageData, error } = canvasResult;
+      if (error || !canvas || !context || !imageData || !imageInfo) {
+        console.error(error);
+        return;
+      }
 
-    const img = new Image();
-    img.src = URL.createObjectURL(image);
-
-    const canvas = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height;
-    const ctx = canvas.getContext("2d");
-
-    if (!ctx) return;
-    ctx.drawImage(img, 0, 0);
-
-    img.onload = () => {
+      const { image: file } = imageInfo;
       setDetails({
-        dimensions: { width: img.width, height: img.height },
-        aspectRatio: calculateAspectRatio(img.width, img.height),
-        fileSize: formatFileSize(image.size),
-        fileType: image.type,
-        fileFormat: image.name.split(".").pop() ?? "",
+        dimensions: { width: canvas.width, height: canvas.height },
+        aspectRatio: calculateAspectRatio(canvas.width, canvas.height),
+        fileSize: formatFileSize(file.size),
+        fileType: file.type,
+        fileFormat: file.name.split(".").pop() ?? "",
         luminance: calculateAverageLuminance(
-          ctx,
-          img.width,
-          img.height
+          context,
+          canvas.width,
+          canvas.height
         ).toFixed(2),
-        lastModified: new Date(image.lastModified).toLocaleDateString(),
+        lastModified: new Date(file.lastModified).toLocaleDateString(),
         colorDepth: 24,
         bitsPerChannel: 8,
         channels: 3,
       });
-      URL.revokeObjectURL(img.src);
-    };
-  }, [image]);
+    },
+    []
+  );
 
-  if (!image || !details) return null;
+  useEffect(
+    () => handleCanvasResult(canvasResult, imageInfo),
+    [handleCanvasResult, canvasResult, imageInfo]
+  );
+
+  if (!imageInfo || !details) return null;
 
   const stats = [
     {
@@ -102,11 +107,14 @@ const ImageStatistics: React.FC<ImageStatisticsProps> = ({ image }) => {
     {
       icon: <BiTime className="text-xl" />,
       label: "Modified",
-      value: new Date(image.lastModified).toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }),
+      value: new Date(imageInfo.image.lastModified).toLocaleDateString(
+        "en-GB",
+        {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }
+      ),
     },
     {
       icon: <BiColorFill className="text-xl" />,
