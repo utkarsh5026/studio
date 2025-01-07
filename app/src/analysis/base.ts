@@ -1,4 +1,4 @@
-import type { ImageDimensions } from "./types";
+import type { ImageDimensions } from "../components/analysis/colors/types";
 
 /**
  * Calculates the simplified aspect ratio for given dimensions
