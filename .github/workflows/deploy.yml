@@ -35,6 +35,8 @@ jobs:
       - name: Build
         working-directory: ./app
         run: npm run build
+        env:
+          BASE_URL: "/studio/"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
