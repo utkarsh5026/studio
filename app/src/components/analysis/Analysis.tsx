@@ -1,10 +1,10 @@
 import React from "react";
 import ImageStatistics from "./ImageStatistics";
 import { useImage } from "../../store/image/hooks";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs.tsx";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EmptyAnalysis from "./EmptyAnalysis";
-import { ColorAnalysis } from "./ColorAnalysis";
 import LuminanceAnalysisView from "./luminiscence/LuminanceAnalysis";
+import ColorAnalysis from "./colors/ColorAnalysis";
 
 import CompressionVisualizer from "./compress/CompressionVisualizer";
 import ImageStructure from "./ImageStructure";
@@ -24,12 +24,12 @@ const Analysis: React.FC = () => {
         <TabsTrigger value="compression">Compression</TabsTrigger>
         <TabsTrigger value="structure">Structure</TabsTrigger>
       </TabsList>
-      <div>
+      <div className="h-full">
         <TabsContent value="statistics" className="h-full">
           <ImageStatistics imageInfo={image} canvasResult={canvasResult} />
         </TabsContent>
         <TabsContent value="color" className="h-full">
-          <ColorAnalysis imageData={image.image} />
+          <ColorAnalysis canvasResult={canvasResult} />
         </TabsContent>
         <TabsContent value="luminance" className="h-full">
           <LuminanceAnalysisView canvasResult={canvasResult} />
