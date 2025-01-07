@@ -13,6 +13,29 @@ type UseCanvasProps = {
   onError: (error: string) => void;
 };
 
+/**
+ * A custom React hook that handles canvas operations for image processing.
+ *
+ * This hook creates a canvas element, loads an image from a file, and provides
+ * access to the canvas context and image data. It handles various error cases
+ * and cleanup operations automatically.
+ *
+ * @param {UseCanvasProps} props - The props object containing file and callback functions
+ * @param {File | null} props.file - The image file to be processed
+ * @param {function} props.onSuccess - Callback function called when image is successfully processed
+ * @param {function} props.onError - Callback function called when an error occurs
+ *
+ * @returns {CanvasResult} An object containing the canvas element, context, image data, and any errors
+ *
+ * @example
+ * ```tsx
+ * const { canvas, context, imageData, error } = useCanvas({
+ *   file: imageFile,
+ *   onSuccess: (result) => console.log('Image processed:', result),
+ *   onError: (error) => console.error('Error:', error)
+ * });
+ * ```
+ */
 export const useCanvas = ({ file, onSuccess, onError }: UseCanvasProps) => {
   const [result, setResult] = useState<CanvasResult>({
     canvas: null,
