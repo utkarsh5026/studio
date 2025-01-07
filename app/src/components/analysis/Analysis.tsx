@@ -7,7 +7,6 @@ import LuminanceAnalysisView from "./luminiscence/LuminanceAnalysis";
 import ColorAnalysis from "./colors/ColorAnalysis";
 
 import CompressionVisualizer from "./compress/CompressionVisualizer";
-import ImageStructure from "./ImageStructure";
 import ImagePerformance from "./perf/ImagePerformance";
 
 const Analysis: React.FC = () => {
@@ -22,7 +21,6 @@ const Analysis: React.FC = () => {
         <TabsTrigger value="luminance">Luminance</TabsTrigger>
         <TabsTrigger value="quality">Quality</TabsTrigger>
         <TabsTrigger value="compression">Compression</TabsTrigger>
-        <TabsTrigger value="structure">Structure</TabsTrigger>
       </TabsList>
       <div className="h-full">
         <TabsContent value="statistics" className="h-full">
@@ -42,9 +40,6 @@ const Analysis: React.FC = () => {
             imageFile={image}
             canvasResult={canvasResult}
           />
-        </TabsContent>
-        <TabsContent value="structure" className="h-full">
-          <ImageStructure file={image.image} />
         </TabsContent>
       </div>
     </Tabs>

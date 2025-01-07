@@ -11,6 +11,7 @@ import ClippingAnalysisCard from "./ClippingAnalysis";
 
 import type { LuminanceAnalysis } from "./types";
 import type { CanvasResult } from "../../../canvas/useCanvas";
+import LoadingCard from "../utils/LoadingCard";
 
 interface LuminanceAnalysisProps {
   canvasResult: CanvasResult;
@@ -34,11 +35,7 @@ const LuminanceAnalysisView: React.FC<LuminanceAnalysisProps> = ({
     analyzeLuminance();
   }, [canvasResult]);
 
-  console.log(analysis);
-
-  if (!analysis) {
-    return <div className="text-center p-4">Analyzing image luminance...</div>;
-  }
+  if (!analysis) return <LoadingCard message="Analyzing luminance..." />;
 
   return (
     <Container>
