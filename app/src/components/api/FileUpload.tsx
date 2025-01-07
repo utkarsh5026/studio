@@ -1,3 +1,16 @@
+/*
+ * FileUpload Component
+ *
+ * A slick drag-and-drop image uploader that lets users:
+ * - Drop images directly onto the upload zone
+ * - Click to select files from their device
+ * - Preview the uploaded image
+ * - Remove the image if they change their mind
+ *
+ * Handles all the usual stuff like file validation, loading states,
+ * and image dimensions tracking. Plays nice with dark mode too! 🌙
+ */
+
 import React, { useState } from "react";
 import { FiUploadCloud } from "react-icons/fi";
 import { Button } from "../ui/button";
@@ -5,7 +18,7 @@ import { useImage } from "../../store/image/hooks";
 
 const FileUpload: React.FC = () => {
   const [isDragging, setIsDragging] = useState(false);
-  const { image, addFile, removeImage, loading } = useImage();
+  const { image, addFile, removeImage, loading, addDimensions } = useImage();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -28,6 +41,14 @@ const FileUpload: React.FC = () => {
 
     const file = e.dataTransfer.files?.[0];
     if (file?.type.startsWith("image/")) addFile(file);
+  };
+
+  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    addDimensions({
+      width: img.naturalWidth,
+      height: img.naturalHeight,
+    });
   };
 
   return (
@@ -64,6 +85,7 @@ const FileUpload: React.FC = () => {
               src={image.preview}
               alt="Preview"
               className="max-h-[80%] w-auto mx-auto rounded-xl shadow-md dark:shadow-gray-900/50 object-contain"
+              onLoad={handleImageLoad}
             />
             <button
               onClick={() => removeImage()}
