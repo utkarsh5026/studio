@@ -36,6 +36,15 @@ export type BandwidthRequirementsAnalysis = {
   recommendation: string;
 };
 
+export type Metrics = {
+  resolutionRatio: ResolutionAnalysis;
+  loadingTime: LoadingTimeAnalysis;
+  memoryUsage: MemoryUsageAnalysis;
+  renderingImpact: RenderingImpactAnalysis;
+  browserCompatibility: BrowserCompatibilityAnalysis;
+  bandwidthRequirements: BandwidthRequirementsAnalysis;
+};
+
 /**
  * Analyzes various performance aspects of an image file including resolution,
  * loading time, memory usage, rendering impact, browser compatibility, and bandwidth requirements.
@@ -298,5 +307,16 @@ export class ImagePerformanceAnalyzer {
     }
 
     return { requirements, recommendation };
+  }
+
+  public getMetrics(): Metrics {
+    return {
+      resolutionRatio: this.calculateResolutionRatio(),
+      loadingTime: this.analyzeLoadingTime(),
+      memoryUsage: this.calculateMemoryUsage(),
+      renderingImpact: this.evaluateRenderingImpact(),
+      browserCompatibility: this.assessBrowserCompatibility(),
+      bandwidthRequirements: this.calculateBandwidthRequirements(),
+    };
   }
 }

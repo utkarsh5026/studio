@@ -11,62 +11,7 @@ import BandwidthRequirements from "./BandwidthRequirements";
 import RenderingImpact from "./RenderingImpact";
 import PerfCard from "./PerfCard";
 import Container from "../utils/Container";
-
-// Sample metrics for testing
-const sampleMetrics = {
-  resolutionRatio: {
-    ratio: 0.8,
-    assessment: "Average",
-    recommendation: "Minor optimization possible - consider light compression",
-  },
-  loadingTime: {
-    times: [
-      { connection: "2G", time: 4.2 },
-      { connection: "3G", time: 1.8 },
-      { connection: "4G", time: 0.4 },
-      { connection: "5G", time: 0.08 },
-      { connection: "Fiber", time: 0.03 },
-    ],
-    assessment: "Loading time is acceptable across most connection types",
-  },
-  memoryUsage: {
-    totalMB: 45.6,
-    components: [
-      { name: "Raw Pixel Data", size: 20.5 },
-      { name: "Decoded Buffer", size: 15.8 },
-      { name: "Processing Buffers", size: 9.3 },
-    ],
-    assessment: "Moderate memory impact",
-  },
-  renderingImpact: {
-    score: 45,
-    factors: [
-      { name: "Resolution Impact", impact: 35 },
-      { name: "Aspect Ratio Complexity", impact: 42 },
-      { name: "Size Impact", impact: 58 },
-    ],
-    recommendation: "Minor optimizations recommended",
-  },
-  browserCompatibility: {
-    format: "JPEG",
-    compatibility: [
-      { browser: "Chrome", support: "Full" },
-      { browser: "Firefox", support: "Full" },
-      { browser: "Safari", support: "Full" },
-      { browser: "Edge", support: "Full" },
-    ],
-    recommendation: "Widely supported format, good for photographs",
-  },
-  bandwidthRequirements: {
-    requirements: [
-      { scenario: "Single Load", bandwidth: 1.2 },
-      { scenario: "Multiple Instances", bandwidth: 3.6 },
-      { scenario: "With Caching", bandwidth: 0.24 },
-      { scenario: "Peak Usage", bandwidth: 6.0 },
-    ],
-    recommendation: "Image size is acceptable but monitor usage patterns",
-  },
-};
+import type { Metrics } from "../../../analysis/performance";
 
 interface ImagePerformanceMetricsProps {
   imageFile: ImageInfo;
@@ -75,7 +20,7 @@ interface ImagePerformanceMetricsProps {
 const ImagePerformanceMetrics: React.FC<ImagePerformanceMetricsProps> = ({
   imageFile,
 }) => {
-  const [metrics, setMetrics] = useState(sampleMetrics);
+  const [metrics, setMetrics] = useState<Metrics | null>(null);
 
   useEffect(() => {
     const analyzeImage = async () => {
@@ -92,14 +37,7 @@ const ImagePerformanceMetrics: React.FC<ImagePerformanceMetricsProps> = ({
           dimensions.height
         );
 
-        setMetrics({
-          resolutionRatio: analyzer.calculateResolutionRatio(),
-          loadingTime: analyzer.analyzeLoadingTime(),
-          memoryUsage: analyzer.calculateMemoryUsage(),
-          renderingImpact: analyzer.evaluateRenderingImpact(),
-          browserCompatibility: analyzer.assessBrowserCompatibility(),
-          bandwidthRequirements: analyzer.calculateBandwidthRequirements(),
-        });
+        setMetrics(analyzer.getMetrics());
       };
     };
 
