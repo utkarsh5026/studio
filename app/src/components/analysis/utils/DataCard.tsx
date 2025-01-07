@@ -1,3 +1,9 @@
+/**
+ * A card component that displays data in a card format.
+ * @param title - The title of the card.
+ * @param children - The content to be displayed inside the card.
+ */
+
 import { Card, CardHeader, CardTitle, CardContent } from "../../ui/card";
 
 interface DataCardProps {
