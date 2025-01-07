@@ -4,8 +4,9 @@ import {
   setImage as setImageAction,
   removeImage as removeImageAction,
   setLoading as setLoadingAction,
+  addDimensions as addDimensionsAction,
 } from "./slice";
-import type { ImageInfo } from "./types";
+import type { ImageInfo, dimensions } from "./types";
 
 export const useImage = () => {
   const dispatch = useAppDispatch();
@@ -34,6 +35,7 @@ export const useImage = () => {
         setImage({
           image: file,
           preview: reader.result as string,
+          dimensions: null,
         });
       };
       reader.readAsDataURL(file);
@@ -41,5 +43,18 @@ export const useImage = () => {
     [setImage, startLoading]
   );
 
-  return { image, setImage, removeImage, addFile, loading, error };
+  const addDimensions = useCallback(
+    (dimensions: dimensions) => dispatch(addDimensionsAction(dimensions)),
+    [dispatch]
+  );
+
+  return {
+    image,
+    setImage,
+    removeImage,
+    addFile,
+    addDimensions,
+    loading,
+    error,
+  };
 };

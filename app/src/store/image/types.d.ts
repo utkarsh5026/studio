@@ -1,10 +1,16 @@
+export type dimensions = {
+  width: number;
+  height: number;
+};
+
 export type ImageInfo = {
   image: File;
   preview: string | null;
+  dimensions: dimensions | null;
 };
 
 export type ImageStatistics = {
-  dimensions: { width: number; height: number };
+  dimensions: dimensions;
   fileSize: string;
   aspectRatio: string;
   averageLuminance: number;

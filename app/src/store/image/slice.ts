@@ -1,5 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { ImageInfo } from "./types";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { dimensions, ImageInfo } from "./types";
 
 interface ImageState {
   image: ImageInfo | null;
@@ -38,9 +38,20 @@ const imageSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload;
     },
+    addDimensions: (state, action: PayloadAction<dimensions>) => {
+      if (state.image) {
+        state.image.dimensions = action.payload;
+      }
+    },
   },
 });
 
-export const { setImage, setPreview, removeImage, setLoading, setError } =
-  imageSlice.actions;
+export const {
+  setImage,
+  setPreview,
+  removeImage,
+  setLoading,
+  setError,
+  addDimensions,
+} = imageSlice.actions;
 export default imageSlice.reducer;
