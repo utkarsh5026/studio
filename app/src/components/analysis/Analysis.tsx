@@ -6,14 +6,15 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "../../components/ui/tabs";
+} from "../ui/tabs.tsx";
 import EmptyAnalysis from "./EmptyAnalysis";
 import { ColorAnalysis } from "./ColorAnalysis";
 import LuminanceAnalysisView from "./luminiscence/LuminanceAnalysis";
 
-import Compression from "./compress/compression";
+import CompressionVisualizer from "./compress/CompressionVisualizer";
 import ImageStructure from "./ImageStructure";
 import ImagePerformance from "./perf/ImagePerformance";
+
 const Analysis: React.FC = () => {
   const { image, canvasResult } = useImage();
   if (!image?.preview || !canvasResult) return <EmptyAnalysis />;
@@ -42,7 +43,10 @@ const Analysis: React.FC = () => {
           <ImagePerformance imageFile={image} />
         </TabsContent>
         <TabsContent value="compression" className="h-full">
-          <Compression imageFile={image.image} />
+          <CompressionVisualizer
+            imageFile={image}
+            canvasResult={canvasResult}
+          />
         </TabsContent>
         <TabsContent value="structure" className="h-full">
           <ImageStructure file={image.image} />
