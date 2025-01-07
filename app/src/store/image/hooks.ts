@@ -62,7 +62,6 @@ export const useImage = () => {
   );
 
   const handleCanvasError = useCallback((error: string) => {
-    // You might want to handle canvas errors differently
     console.error(error);
   }, []);
 
