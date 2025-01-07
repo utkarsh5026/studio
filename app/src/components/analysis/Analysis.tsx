@@ -1,12 +1,7 @@
 import React from "react";
 import ImageStatistics from "./ImageStatistics";
 import { useImage } from "../../store/image/hooks";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "../ui/tabs.tsx";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs.tsx";
 import EmptyAnalysis from "./EmptyAnalysis";
 import { ColorAnalysis } from "./ColorAnalysis";
 import LuminanceAnalysisView from "./luminiscence/LuminanceAnalysis";
@@ -29,7 +24,7 @@ const Analysis: React.FC = () => {
         <TabsTrigger value="compression">Compression</TabsTrigger>
         <TabsTrigger value="structure">Structure</TabsTrigger>
       </TabsList>
-      <div className="flex-1 overflow-auto">
+      <div>
         <TabsContent value="statistics" className="h-full">
           <ImageStatistics imageInfo={image} canvasResult={canvasResult} />
         </TabsContent>

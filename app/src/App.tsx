@@ -27,9 +27,9 @@ function App() {
       >
         {darkMode ? "🌞" : "🌙"}
       </button>
-      <main className="flex flex-col items-center justify-center h-screen p-4">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 gap-4">
+      <main className="flex flex-col p-4 h-[calc(100vh-2rem)]">
+        <div className="container mx-auto px-4 h-full">
+          <div className="grid grid-cols-2 gap-4 h-full">
             <FileUpload />
             <Analysis />
           </div>
