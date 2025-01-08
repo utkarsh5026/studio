@@ -7,6 +7,7 @@ A sophisticated web application for analyzing and optimizing images with detaile
 ![Luminance](./images/luminance.png)
 ![Compression](./images/compression.png)
 ![Quality](./images/quality.png)
+![Color](./images/color.png)
 
 ## 🚀 Features
 
