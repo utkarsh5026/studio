@@ -17,6 +17,9 @@ export default defineConfig({
     fs: {
       allow: [".."],
     },
+    watch: {
+      usePolling: true,
+    },
   },
   optimizeDeps: {
     exclude: ["../../rust/pkg"],
