@@ -1,0 +1,61 @@
+# Builder stage for Rust/Wasm
+FROM rust:1.75-slim AS wasm-builder
+
+# Install wasm-pack and dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    pkg-config \
+    git \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install wasm-pack
+RUN curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+# Development environment
+FROM node:20
+
+WORKDIR /workspace
+
+# Create app and rust directories
+RUN mkdir app rust
+
+# Copy package files from app directory
+COPY app/package*.json ./app/
+
+# Install Node.js dependencies
+WORKDIR /workspace/app
+RUN npm install
+
+WORKDIR /workspace
+
+# Install development dependencies for Rust/Wasm
+RUN apt-get update && apt-get install -y \
+    curl \
+    pkg-config \
+    git \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Rust and wasm-pack
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+RUN curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+# Copy source code
+COPY app ./app
+COPY rust ./rust
+
+# Set working directory back to app for development server
+WORKDIR /workspace/app
+
+# Expose development port
+EXPOSE 5173
+
+# Add a script to build WASM and start the dev server
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Use the entrypoint script instead of directly running npm
+ENTRYPOINT ["docker-entrypoint.sh"]
+
