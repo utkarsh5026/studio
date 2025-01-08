@@ -7,3 +7,4 @@
 npm-debug.log
 Dockerfile
 .dockerignore
+# !rust/Cargo.lock
