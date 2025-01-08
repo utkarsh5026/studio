@@ -64,7 +64,7 @@ const ImageStatistics: React.FC<ImageStatisticsProps> = ({
         fileSize: formatFileSize(file.size),
         fileType: file.type,
         fileFormat: file.name.split(".").pop() ?? "",
-        luminance: luminance.toString(),
+        luminance: luminance.toFixed(2),
         lastModified: new Date(file.lastModified).toLocaleDateString(),
         colorDepth: 24,
         bitsPerChannel: 8,
