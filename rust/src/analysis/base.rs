@@ -1,7 +1,7 @@
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct ImageDimensions {
     pub width: f64,
     pub height: f64,
