@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { findDominantColors, calculateSaturation } from "./color";
-import Stats from "../Stats";
+import {
+  findDominantColors,
+  findSaturation,
+  analyzeImageColors,
+} from "../../../wasm/base";
+import Stats from "../utils/Stats";
 import {
   BarChart,
   Bar,
@@ -30,7 +34,6 @@ const ColorAnalysis: React.FC<ColorAnalysisProps> = ({ canvasResult }) => {
   const [analysis, setAnalysis] = useState<ColorAnalysisResult | null>(null);
 
   const analyzeColors = useCallback(async () => {
-    console.log("Analyzing colors...", canvasResult);
     const { imageData, canvas, context } = canvasResult;
 
     if (!imageData || !canvas || !context) {
@@ -42,57 +45,27 @@ const ColorAnalysis: React.FC<ColorAnalysisProps> = ({ canvasResult }) => {
     const height = imageData.height;
     const pixels = context.getImageData(0, 0, width, height).data;
 
-    // Initialize histograms for RGB channels
-    const redHist = new Array(256).fill(0);
-    const greenHist = new Array(256).fill(0);
-    const blueHist = new Array(256).fill(0);
+    const pixelsArray = new Uint8Array(pixels);
+    const dominantColors = await findDominantColors(pixelsArray, 5, 10);
+    const saturation = await findSaturation(pixelsArray);
+    const { histograms, balance, grayscaleAverage } = await analyzeImageColors(
+      pixelsArray
+    );
 
-    // Calculate histograms and collect color data
-    for (let i = 0; i < pixels.length; i += 4) {
-      const r = pixels[i];
-      const g = pixels[i + 1];
-      const b = pixels[i + 2];
-
-      redHist[r]++;
-      greenHist[g]++;
-      blueHist[b]++;
-    }
-
-    const dominantColors = await findDominantColors(pixels);
-    const saturation = await calculateSaturation(pixels);
-
-    let totalGray = 0;
-    const totalPixels = pixels.length / 4;
-    let totalRed = 0,
-      totalGreen = 0,
-      totalBlue = 0;
-
-    for (let i = 0; i < pixels.length; i += 4) {
-      const r = pixels[i];
-      const g = pixels[i + 1];
-      const b = pixels[i + 2];
-
-      const gray = 0.299 * r + 0.587 * g + 0.114 * b;
-      totalGray += gray;
-
-      // Color balance calculation
-      totalRed += r;
-      totalGreen += g;
-      totalBlue += b;
-    }
-
-    const grayscaleAverage = totalGray / totalPixels;
-    const colorBalance = {
-      redPercentage: (totalRed / (totalRed + totalGreen + totalBlue)) * 100,
-      greenPercentage: (totalGreen / (totalRed + totalGreen + totalBlue)) * 100,
-      bluePercentage: (totalBlue / (totalRed + totalGreen + totalBlue)) * 100,
+    // Convert Uint32Arrays to regular arrays
+    const convertedHistograms = {
+      red: Array.from(histograms.red),
+      green: Array.from(histograms.green),
+      blue: Array.from(histograms.blue),
     };
 
+    const colorBalance = balance;
+
     setAnalysis({
-      histograms: {
-        red: redHist,
-        green: greenHist,
-        blue: blueHist,
+      histograms: convertedHistograms as {
+        red: number[];
+        green: number[];
+        blue: number[];
       },
       dominantColors,
       saturation,
@@ -154,11 +127,44 @@ const ColorAnalysis: React.FC<ColorAnalysisProps> = ({ canvasResult }) => {
           <Stats
             icon={<BsCircleHalf />}
             label="Color Balance"
-            value={`R:${analysis.colorBalance.redPercentage.toFixed(
-              1
-            )}% G:${analysis.colorBalance.greenPercentage.toFixed(
-              1
-            )}% B:${analysis.colorBalance.bluePercentage.toFixed(1)}%`}
+            value={
+              <div className="w-full">
+                <div className="flex h-4 w-full rounded-full overflow-hidden">
+                  <div
+                    className="transition-all duration-300"
+                    style={{
+                      width: `${analysis.colorBalance.redPercentage}%`,
+                      backgroundColor: "#ef4444",
+                    }}
+                  />
+                  <div
+                    className="transition-all duration-300"
+                    style={{
+                      width: `${analysis.colorBalance.greenPercentage}%`,
+                      backgroundColor: "#22c55e",
+                    }}
+                  />
+                  <div
+                    className="transition-all duration-300"
+                    style={{
+                      width: `${analysis.colorBalance.bluePercentage}%`,
+                      backgroundColor: "#3b82f6",
+                    }}
+                  />
+                </div>
+                <div className="flex justify-between text-xs mt-1 text-gray-600 dark:text-gray-400">
+                  <span>
+                    R: {analysis.colorBalance.redPercentage.toFixed(1)}%
+                  </span>
+                  <span>
+                    G: {analysis.colorBalance.greenPercentage.toFixed(1)}%
+                  </span>
+                  <span>
+                    B: {analysis.colorBalance.bluePercentage.toFixed(1)}%
+                  </span>
+                </div>
+              </div>
+            }
           />
         </div>
       </DataCard>

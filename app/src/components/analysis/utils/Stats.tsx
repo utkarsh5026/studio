@@ -3,7 +3,7 @@ import React from "react";
 type StatsProps = {
   icon: React.ReactNode;
   label: string;
-  value: string;
+  value: React.ReactNode;
 };
 
 const Stats: React.FC<StatsProps> = ({ icon, label, value }) => {

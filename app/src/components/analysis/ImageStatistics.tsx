@@ -9,7 +9,7 @@ import {
   BiTime,
   BiColorFill,
 } from "react-icons/bi";
-import Stats from "./Stats";
+import Stats from "./utils/Stats";
 import DataCard from "./utils/DataCard";
 import type { CanvasResult } from "../../canvas/useCanvas";
 import type { ImageInfo } from "../../store/image/types";
