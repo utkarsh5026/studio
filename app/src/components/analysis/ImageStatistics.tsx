@@ -1,9 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import {
-  calculateAspectRatio,
-  formatFileSize,
-  calculateAverageLuminance,
-} from "../../analysis/base";
+import { formatFileSize } from "../../analysis/base";
 import {
   BiRectangle,
   BiExpandAlt,
@@ -17,6 +13,7 @@ import Stats from "./Stats";
 import DataCard from "./utils/DataCard";
 import type { CanvasResult } from "../../canvas/useCanvas";
 import type { ImageInfo } from "../../store/image/types";
+import { analyzeImage } from "../../wasm/base";
 
 interface ImageDetails {
   dimensions: { width: number; height: number };
@@ -44,7 +41,7 @@ const ImageStatistics: React.FC<ImageStatisticsProps> = ({
   const [details, setDetails] = useState<ImageDetails | null>(null);
 
   const handleCanvasResult = useCallback(
-    (canvasResult: CanvasResult, imageInfo: ImageInfo) => {
+    async (canvasResult: CanvasResult, imageInfo: ImageInfo) => {
       const { canvas, context, imageData, error } = canvasResult;
       if (error || !canvas || !context || !imageData || !imageInfo) {
         console.error(error);
@@ -52,17 +49,22 @@ const ImageStatistics: React.FC<ImageStatisticsProps> = ({
       }
 
       const { image: file } = imageInfo;
+      const result = await analyzeImage(
+        canvas.width,
+        canvas.height,
+        file.size,
+        new Uint8Array(imageData.data.buffer)
+      );
+
+      const { aspectRatio, luminance } = result;
+
       setDetails({
         dimensions: { width: canvas.width, height: canvas.height },
-        aspectRatio: calculateAspectRatio(canvas.width, canvas.height),
+        aspectRatio: aspectRatio,
         fileSize: formatFileSize(file.size),
         fileType: file.type,
         fileFormat: file.name.split(".").pop() ?? "",
-        luminance: calculateAverageLuminance(
-          context,
-          canvas.width,
-          canvas.height
-        ).toFixed(2),
+        luminance: luminance.toString(),
         lastModified: new Date(file.lastModified).toLocaleDateString(),
         colorDepth: 24,
         bitsPerChannel: 8,
@@ -72,10 +74,9 @@ const ImageStatistics: React.FC<ImageStatisticsProps> = ({
     []
   );
 
-  useEffect(
-    () => handleCanvasResult(canvasResult, imageInfo),
-    [handleCanvasResult, canvasResult, imageInfo]
-  );
+  useEffect(() => {
+    handleCanvasResult(canvasResult, imageInfo);
+  }, [handleCanvasResult, canvasResult, imageInfo]);
 
   if (!imageInfo || !details) return null;
 
