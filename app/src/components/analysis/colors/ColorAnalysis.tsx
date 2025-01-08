@@ -12,6 +12,7 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts";
 import {
   BsPalette,
@@ -171,6 +172,71 @@ const ColorAnalysis: React.FC<ColorAnalysisProps> = ({ canvasResult }) => {
 
       <DataCard title="RGB Histograms">
         <section className="space-y-4">
+          <div className="h-64 mb-8">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={Array.from({ length: 256 }, (_, index) => ({
+                  index,
+                  red: analysis.histograms.red[index],
+                  green: analysis.histograms.green[index],
+                  blue: analysis.histograms.blue[index],
+                }))}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+              >
+                <XAxis
+                  dataKey="index"
+                  stroke="currentColor"
+                  label={{ value: "Intensity", position: "bottom", offset: 0 }}
+                />
+                <YAxis
+                  stroke="currentColor"
+                  label={{
+                    value: "Pixel Count",
+                    angle: -90,
+                    position: "insideLeft",
+                    style: { textAnchor: "middle" },
+                  }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "var(--background)",
+                    borderColor: "var(--border)",
+                    color: "var(--text)",
+                    padding: "10px",
+                    borderRadius: "6px",
+                  }}
+                  formatter={(value: number, name: string) => [
+                    value.toLocaleString(),
+                    name.charAt(0).toUpperCase() + name.slice(1),
+                  ]}
+                  labelFormatter={(label) => `Intensity: ${label}`}
+                />
+                <Legend verticalAlign="top" height={36} />
+                <Bar
+                  dataKey="red"
+                  fill="#ef4444"
+                  opacity={0.6}
+                  stackId="stack"
+                  name="Red"
+                />
+                <Bar
+                  dataKey="green"
+                  fill="#22c55e"
+                  opacity={0.6}
+                  stackId="stack"
+                  name="Green"
+                />
+                <Bar
+                  dataKey="blue"
+                  fill="#3b82f6"
+                  opacity={0.6}
+                  stackId="stack"
+                  name="Blue"
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {["red", "green", "blue"].map((channel) => (
               <div key={channel} className="h-48">
